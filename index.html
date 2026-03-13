@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DNLS Automatizations — Automatiza tu negocio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg-deep:#07080c;
+  --bg-card:#0d0f16;
+  --bg-card-hover:#111420;
+  --bg-input:#0a0c13;
+  --border:#1a1d2e;
+  --border-focus:#00e5a0;
+  --accent:#00e5a0;
+  --accent-dim:#00e5a020;
+  --accent-mid:#00e5a040;
+  --accent-secondary:#00b8ff;
+  --text-primary:#e8eaf0;
+  --text-secondary:#7a7f94;
+  --text-muted:#4a4e62;
+  --danger:#ff4d6a;
+  --glow:0 0 40px #00e5a015,0 0 120px #00e5a008;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--bg-deep);
+  color:var(--text-primary);
+  min-height:100vh;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── GRID BACKGROUND ── */
+.grid-bg{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(var(--border) 1px,transparent 1px),
+    linear-gradient(90deg,var(--border) 1px,transparent 1px);
+  background-size:60px 60px;
+  opacity:0.15;
+  mask-image:radial-gradient(ellipse 70% 50% at 50% 30%,black 20%,transparent 70%);
+}
+
+/* ── GLOW ORBS ── */
+.orb{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0}
+.orb-1{width:600px;height:600px;background:radial-gradient(circle,#00e5a012,transparent 70%);top:-200px;right:-100px;animation:orbFloat 20s ease-in-out infinite}
+.orb-2{width:500px;height:500px;background:radial-gradient(circle,#00b8ff0a,transparent 70%);bottom:-150px;left:-100px;animation:orbFloat 25s ease-in-out infinite reverse}
+@keyframes orbFloat{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-40px)}}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;width:100%;z-index:100;
+  padding:20px 40px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(180deg,var(--bg-deep) 60%,transparent);
+  backdrop-filter:blur(12px);
+}
+.logo{
+  font-family:'JetBrains Mono',monospace;
+  font-weight:700;font-size:18px;
+  letter-spacing:2px;
+  color:var(--accent);
+  text-transform:uppercase;
+}
+.logo span{color:var(--text-primary)}
+nav a{
+  font-size:13px;font-weight:500;
+  color:var(--text-secondary);
+  text-decoration:none;
+  letter-spacing:0.5px;
+  transition:color 0.3s;
+}
+nav a:hover{color:var(--accent)}
+
+/* ── HERO ── */
+.hero{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;
+  padding:160px 24px 80px;
+  max-width:900px;margin:0 auto;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 16px;
+  border:1px solid var(--border);
+  border-radius:100px;
+  font-size:12px;font-weight:500;
+  color:var(--accent);
+  background:var(--accent-dim);
+  margin-bottom:32px;
+  letter-spacing:0.5px;
+  text-transform:uppercase;
+  animation:fadeUp 0.8s ease-out;
+}
+.hero-badge::before{content:'';width:6px;height:6px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+
+h1{
+  font-size:clamp(40px,6vw,72px);
+  font-weight:800;
+  line-height:1.05;
+  letter-spacing:-2px;
+  margin-bottom:24px;
+  animation:fadeUp 0.8s ease-out 0.1s both;
+}
+h1 em{
+  font-style:normal;
+  background:linear-gradient(135deg,var(--accent),var(--accent-secondary));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero p{
+  font-size:18px;line-height:1.7;
+  color:var(--text-secondary);
+  max-width:560px;
+  animation:fadeUp 0.8s ease-out 0.2s both;
+}
+.hero-cta{
+  margin-top:40px;
+  display:flex;gap:16px;
+  animation:fadeUp 0.8s ease-out 0.3s both;
+}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:14px 32px;
+  border-radius:12px;
+  font-family:'Outfit',sans-serif;
+  font-size:15px;font-weight:600;
+  text-decoration:none;
+  cursor:pointer;border:none;
+  transition:all 0.3s ease;
+}
+.btn-primary{
+  background:var(--accent);color:var(--bg-deep);
+  box-shadow:0 0 30px #00e5a025;
+}
+.btn-primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 0 50px #00e5a040;
+}
+.btn-ghost{
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--text-primary);
+}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── STATS ── */
+.stats{
+  position:relative;z-index:1;
+  display:flex;justify-content:center;gap:80px;
+  padding:40px 24px 80px;
+  animation:fadeUp 0.8s ease-out 0.4s both;
+}
+.stat{text-align:center}
+.stat-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:36px;font-weight:700;
+  color:var(--accent);
+}
+.stat-label{
+  font-size:13px;color:var(--text-muted);
+  margin-top:4px;letter-spacing:0.5px;
+  text-transform:uppercase;
+}
+
+/* ── FORM SECTION ── */
+.form-section{
+  position:relative;z-index:1;
+  max-width:640px;margin:0 auto;
+  padding:0 24px 120px;
+}
+.form-card{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:48px;
+  box-shadow:var(--glow);
+  position:relative;
+  overflow:hidden;
+}
+.form-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent-mid),transparent);
+}
+.form-header{margin-bottom:36px;text-align:center}
+.form-header h2{
+  font-size:28px;font-weight:700;
+  letter-spacing:-0.5px;
+  margin-bottom:8px;
+}
+.form-header p{
+  font-size:14px;color:var(--text-secondary);
+  line-height:1.6;
+}
+
+.form-grid{display:flex;flex-direction:column;gap:20px}
+.form-row{display:flex;gap:16px}
+.form-row > .field{flex:1}
+
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{
+  font-size:12px;font-weight:600;
+  color:var(--text-secondary);
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+.field label .req{color:var(--accent);margin-left:2px}
+
+.field input,.field select,.field textarea{
+  width:100%;
+  background:var(--bg-input);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:14px 16px;
+  font-family:'Outfit',sans-serif;
+  font-size:15px;
+  color:var(--text-primary);
+  outline:none;
+  transition:all 0.3s ease;
+}
+.field input::placeholder,.field textarea::placeholder{color:var(--text-muted)}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-dim),0 0 20px #00e5a010;
+}
+.field select{
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%237a7f94'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 14px center;
+  cursor:pointer;
+}
+.field select option{background:var(--bg-card);color:var(--text-primary)}
+.field textarea{resize:vertical;min-height:100px;line-height:1.6}
+
+.field .error-msg{
+  font-size:11px;color:var(--danger);
+  min-height:0;overflow:hidden;
+  transition:all 0.3s ease;
+  opacity:0;max-height:0;
+}
+.field.has-error .error-msg{opacity:1;max-height:20px;margin-top:2px}
+.field.has-error input,
+.field.has-error select,
+.field.has-error textarea{border-color:var(--danger)}
+
+.submit-btn{
+  width:100%;
+  padding:16px;
+  margin-top:8px;
+  background:linear-gradient(135deg,var(--accent),#00c896);
+  color:var(--bg-deep);
+  font-family:'Outfit',sans-serif;
+  font-size:16px;font-weight:700;
+  letter-spacing:0.5px;
+  border:none;border-radius:12px;
+  cursor:pointer;
+  transition:all 0.3s ease;
+  position:relative;
+  overflow:hidden;
+}
+.submit-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 40px #00e5a030;
+}
+.submit-btn:active{transform:translateY(0)}
+.submit-btn:disabled{
+  opacity:0.6;cursor:not-allowed;
+  transform:none !important;
+  box-shadow:none !important;
+}
+.submit-btn .spinner{
+  display:none;
+  width:20px;height:20px;
+  border:2px solid transparent;
+  border-top-color:var(--bg-deep);
+  border-radius:50%;
+  animation:spin 0.7s linear infinite;
+  margin:0 auto;
+}
+.submit-btn.loading .btn-text{display:none}
+.submit-btn.loading .spinner{display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── SUCCESS STATE ── */
+.success-state{
+  display:none;
+  text-align:center;
+  padding:40px 0;
+  animation:fadeUp 0.5s ease-out;
+}
+.success-state.show{display:block}
+.success-icon{
+  width:72px;height:72px;
+  margin:0 auto 24px;
+  border-radius:50%;
+  background:var(--accent-dim);
+  border:2px solid var(--accent);
+  display:flex;align-items:center;justify-content:center;
+}
+.success-icon svg{width:32px;height:32px;color:var(--accent)}
+.success-state h3{font-size:22px;font-weight:700;margin-bottom:8px}
+.success-state p{font-size:14px;color:var(--text-secondary);line-height:1.7}
+
+/* ── FEATURES ── */
+.features{
+  position:relative;z-index:1;
+  max-width:900px;margin:0 auto;
+  padding:0 24px 120px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+}
+.feature{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:32px 24px;
+  transition:all 0.3s ease;
+}
+.feature:hover{
+  border-color:var(--accent-mid);
+  background:var(--bg-card-hover);
+  transform:translateY(-4px);
+}
+.feature-icon{
+  width:44px;height:44px;
+  border-radius:12px;
+  background:var(--accent-dim);
+  border:1px solid var(--accent-mid);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:20px;
+  font-size:20px;
+}
+.feature h3{font-size:16px;font-weight:600;margin-bottom:8px}
+.feature p{font-size:13px;color:var(--text-secondary);line-height:1.7}
+
+/* ── FOOTER ── */
+footer{
+  position:relative;z-index:1;
+  text-align:center;
+  padding:40px 24px;
+  border-top:1px solid var(--border);
+  font-size:12px;color:var(--text-muted);
+  letter-spacing:0.5px;
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  nav{padding:16px 20px}
+  .hero{padding:120px 20px 60px}
+  .stats{gap:40px;flex-wrap:wrap}
+  .form-card{padding:32px 24px}
+  .form-row{flex-direction:column;gap:20px}
+  .features{grid-template-columns:1fr;gap:16px}
+  .hero-cta{flex-direction:column;width:100%}
+  .btn{justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">DNLS<span> automatizations</span></div>
+  <a href="#contacto">Agendar consultoría</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">Automatización inteligente</div>
+  <h1>Transforma tus procesos con <em>automatización</em></h1>
+  <p>Eliminamos las tareas repetitivas de tu negocio para que te enfoques en lo que realmente importa: crecer.</p>
+  <div class="hero-cta">
+    <a href="#contacto" class="btn btn-primary">Solicitar consultoría gratuita &#8594;</a>
+    <a href="#servicios" class="btn btn-ghost">Ver servicios</a>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num">+200</div>
+    <div class="stat-label">Procesos automatizados</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">85%</div>
+    <div class="stat-label">Reducción de tiempo</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">24/7</div>
+    <div class="stat-label">Operación continua</div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="servicios">
+  <div class="feature">
+    <div class="feature-icon">
+      <svg width="22" height="22" fill="none" stroke="var(--accent)" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    </div>
+    <h3>Flujos inteligentes</h3>
+    <p>Diseñamos automatizaciones con IA que conectan tus herramientas y eliminan trabajo manual.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">
+      <svg width="22" height="22" fill="none" stroke="var(--accent)" stroke-width="1.5" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+    </div>
+    <h3>Integración total</h3>
+    <p>Conectamos CRMs, emails, hojas de cálculo, calendarios y más en un solo flujo automatizado.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">
+      <svg width="22" height="22" fill="none" stroke="var(--accent)" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 6v6l4 2"/></svg>
+    </div>
+    <h3>Resultados rápidos</h3>
+    <p>Implementación ágil. En días, no meses. Tu automatización funcionando mientras la competencia planifica.</p>
+  </div>
+</section>
+
+<!-- FORM -->
+<section class="form-section" id="contacto">
+  <div class="form-card">
+    <div class="form-header">
+      <h2>Agenda tu consultoría</h2>
+      <p>Cuéntanos sobre tu negocio y te contactaremos con una propuesta personalizada.</p>
+    </div>
+
+    <form id="contact-form" class="form-grid" novalidate>
+      <div class="form-row">
+        <div class="field">
+          <label>Nombre <span class="req">*</span></label>
+          <input type="text" name="nombre" placeholder="Tu nombre" required>
+          <span class="error-msg">Este campo es obligatorio</span>
+        </div>
+        <div class="field">
+          <label>Apellido <span class="req">*</span></label>
+          <input type="text" name="apellido" placeholder="Tu apellido" required>
+          <span class="error-msg">Este campo es obligatorio</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Correo electrónico <span class="req">*</span></label>
+        <input type="email" name="email" placeholder="ejemplo@tudominio.com" required>
+        <span class="error-msg">Ingresa un correo válido</span>
+      </div>
+
+      <div class="field">
+        <label>Presupuesto estimado <span class="req">*</span></label>
+        <select name="presupuesto" required>
+          <option value="" disabled selected>Selecciona un rango</option>
+          <option value="100,000 - 500,000">$100,000 — $500,000 COP</option>
+          <option value="1M - 2M">$1M — $2M COP</option>
+        </select>
+        <span class="error-msg">Selecciona una opción</span>
+      </div>
+
+      <div class="field">
+        <label>¿Qué proceso necesitas automatizar? <span class="req">*</span></label>
+        <textarea name="necesidad" placeholder="Describe brevemente el proceso que te gustaría automatizar..." required></textarea>
+        <span class="error-msg">Cuéntanos sobre tu necesidad</span>
+      </div>
+
+      <button type="submit" class="submit-btn">
+        <span class="btn-text">Enviar solicitud</span>
+        <span class="spinner"></span>
+      </button>
+    </form>
+
+    <div class="success-state" id="success">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+      <h3>Solicitud enviada</h3>
+      <p>Hemos recibido tu información. Te contactaremos pronto con los detalles para agendar tu consultoría gratuita.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  &copy; 2026 DNLS Automatizations — Todos los derechos reservados
+</footer>
+
+<script>
+const form = document.getElementById('contact-form');
+const successEl = document.getElementById('success');
+
+// ── REPLACE THIS URL with your n8n form webhook URL ──
+const WEBHOOK_URL = 'YOUR_N8N_WEBHOOK_URL_HERE';
+
+function validateEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function validateForm() {
+  let valid = true;
+  const fields = form.querySelectorAll('.field');
+
+  fields.forEach(field => {
+    const input = field.querySelector('input, select, textarea');
+    if (!input) return;
+
+    field.classList.remove('has-error');
+
+    if (input.required) {
+      if (input.type === 'email' && !validateEmail(input.value)) {
+        field.classList.add('has-error');
+        valid = false;
+      } else if (!input.value.trim() || (input.tagName === 'SELECT' && !input.value)) {
+        field.classList.add('has-error');
+        valid = false;
+      }
+    }
+  });
+
+  return valid;
+}
+
+// Clear error on input
+form.querySelectorAll('input, select, textarea').forEach(el => {
+  el.addEventListener('input', () => {
+    el.closest('.field').classList.remove('has-error');
+  });
+});
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!validateForm()) return;
+
+  const btn = form.querySelector('.submit-btn');
+  btn.classList.add('loading');
+  btn.disabled = true;
+
+  const data = {
+    'Como te llamas?': form.nombre.value.trim(),
+    'Cual es tu apellido?': form.apellido.value.trim(),
+    'ejemplo@tudominio.com': form.email.value.trim(),
+    'Cual es tu presupuesto?': form.presupuesto.value,
+    'QUE PROCESO NECESITAS AUTOMATIZAR?': form.necesidad.value.trim()
+  };
+
+  try {
+    await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      mode: 'no-cors'
+    });
+
+    form.style.display = 'none';
+    successEl.classList.add('show');
+  } catch (err) {
+    alert('Hubo un error al enviar. Inténtalo de nuevo.');
+    btn.classList.remove('loading');
+    btn.disabled = false;
+  }
+});
+
+// Smooth reveal on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.feature, .form-card').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(30px)';
+  el.style.transition = 'all 0.6s ease-out';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
